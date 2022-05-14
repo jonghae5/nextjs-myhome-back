@@ -1,0 +1,24 @@
+{
+  "development": {
+    "username": "root",
+    "password": "skfgnxh1",
+    "database": "react-myhome",
+    "host": "127.0.0.1",
+    "port": "3306",
+    "dialect": "mysql"
+  },
+  "test": {
+    "username": "root",
+    "password": "@skfgnxh12",
+    "database": "react-myhome",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  },
+  "production": {
+    "username": "root",
+    "password": "@skfgnxh12",
+    "database": "react-myhome",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  }
+}
