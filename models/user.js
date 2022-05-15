@@ -26,7 +26,7 @@ module.exports = class User extends Model {
           allowNull: true, // 필수 X
         },
         snsId: {
-          type: DataTypes.STRING(30),
+          type: DataTypes.STRING(100),
           allowNull: true, // 필수 X
         },
         provider: {

@@ -7,7 +7,7 @@ module.exports = () => {
     new KakaoStrategy(
       {
         clientID: process.env.KAKAO_CLIENT_ID, // 카카오 로그인에서 발급받은 REST API 키
-        callbackURL: 'http://localhost:3065/auth/kakao/callback', // 카카오 로그인 Redirect URI 경로
+        callbackURL: '/auth/kakao/callback', // 카카오 로그인 Redirect URI 경로
       },
       /*
        * clientID에 카카오 앱 아이디 추가
@@ -24,7 +24,13 @@ module.exports = () => {
           });
           // 이미 가입된 카카오 프로필이면 성공
           if (exUser) {
-            done(null, exUser); // 로그인 인증 완료
+            const tokenUser = {
+              user: exUser,
+              accessToken: accessToken || '',
+            };
+            done(null, tokenUser); //로그인 인증 완료
+
+            // done(null, exUser);
           } else {
             // 가입되지 않는 유저면 회원가입 시키고 로그인을 시킨다
             const newUser = await User.create({
@@ -34,7 +40,12 @@ module.exports = () => {
               provider: 'kakao',
             });
 
-            done(null, newUser); // 회원가입하고 로그인 인증 완료
+            const tokenUser = {
+              user: newUser,
+              accessToken: accessToken || '',
+            };
+            done(null, tokenUser); // 회원가입하고 로그인 인증 완료
+            // done(null, newUser);
           }
         } catch (error) {
           console.error(error);

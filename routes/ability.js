@@ -7,26 +7,26 @@ const { isLoggedIn } = require('./middlewares');
 router.post('/:id', isLoggedIn, async (req, res) => {
   try {
     console.log('body입니다', req.body);
-    if (req.user.id === parseInt(req.params.id, 10)) {
+    if (req.user.data.id === parseInt(req.params.id, 10)) {
       const ability = await Ability.findOne({
-        where: { UserId: req.user.id },
+        where: { UserId: req.user.data.id },
       });
       const data = req.body;
       if (ability) {
         await Ability.update(
           {
-            UserId: req.user.id,
+            UserId: req.user.data.id,
             data,
           },
           {
             where: {
-              UserId: req.user.id,
+              UserId: req.user.data.id,
             },
           }
         );
       } else {
         await Ability.create({
-          UserId: req.user.id,
+          UserId: req.user.data.id,
           data,
         });
       }
@@ -49,7 +49,7 @@ router.post('/:id', isLoggedIn, async (req, res) => {
           'schoolLoan',
           'etcLoan',
         ],
-        where: { UserId: req.user.id },
+        where: { UserId: req.user.data.id },
       });
       console.log(finalAbility);
       res.status(200).json(finalAbility);
@@ -64,13 +64,14 @@ router.post('/:id', isLoggedIn, async (req, res) => {
 // GET /result/id
 router.get('/result/:id', isLoggedIn, async (req, res) => {
   try {
-    if (req.user.id === parseInt(req.params.id, 10)) {
+    console.log(req);
+    if (req.user.data.id === parseInt(req.params.id, 10)) {
       const ability = await Ability.findOne({
-        where: { UserId: req.user.id },
+        where: { UserId: req.user.data.id },
       });
 
       const basic = await Basic.findOne({
-        where: { UserId: req.user.id },
+        where: { UserId: req.user.data.id },
       });
 
       // 투자 가능 금액 = 현금성 자산 + 주택 관련 자금 - 기존 대출 금액

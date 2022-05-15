@@ -6,7 +6,7 @@ const { isLoggedIn } = require('./middlewares');
 // POST /basic/ability
 router.post('/ability', isLoggedIn, async (req, res) => {
   try {
-    if (req.user.id === req.body.id) {
+    if (req.user.data.id === req.body.id) {
       const basicAbility = await Basic.findOne({
         where: { UserId: req.body.id },
       });
@@ -21,7 +21,7 @@ router.post('/ability', isLoggedIn, async (req, res) => {
           },
           {
             where: {
-              UserId: req.user.id,
+              UserId: req.user.data.id,
             },
           }
         );
@@ -35,7 +35,7 @@ router.post('/ability', isLoggedIn, async (req, res) => {
       }
       const finalBasicAbility = await Basic.findOne({
         attributes: ['yearMoney', 'savingRatioMoney', 'mortgageLoan'],
-        where: { UserId: req.user.id },
+        where: { UserId: req.user.data.id },
       });
 
       res.status(200).json(finalBasicAbility);
