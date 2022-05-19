@@ -12,10 +12,15 @@ const sequelize = new Sequelize(
 const ability = require('./ability');
 const user = require('./user');
 const basic = require('./basic');
+const apartment = require('./apartment');
+const dong = require('./dong');
 
 db.Ability = ability;
 db.User = user;
 db.Basic = basic;
+db.Apartment = apartment;
+db.Dong = dong;
+
 Object.keys(db).forEach(modelName => {
   db[modelName].init(sequelize);
 });

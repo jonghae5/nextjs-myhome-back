@@ -15,6 +15,15 @@ const cookieParser = require('cookie-parser');
 dotenv.config();
 passportConfig();
 
+/* 부동산 데이터 가져오기*/
+/* node-schedule 사용 필수(배포시)*/
+const dataAPI = require('./util/dataAPI');
+dataAPI.dataAPI();
+
+// 법정동 코드저장
+const dongAPI = require('./util/dongAPI');
+// dongAPI.dongAPI();
+
 app.use(
   cors({
     origin: 'http://localhost:3000',
@@ -52,6 +61,7 @@ app.use('/user', userRouter);
 app.use('/ability', abilityRouter);
 app.use('/auth', authRouter);
 app.use('/basic', basicRouter);
+
 app.listen(port, () => {
   console.log('Node 서버 실행 중');
 });
