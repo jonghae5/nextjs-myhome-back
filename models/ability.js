@@ -87,6 +87,26 @@ module.exports = class Ability extends Model {
           defaultValue: 0,
           allowNull: false,
         },
+        allow: {
+          type: DataTypes.INTEGER(30),
+          defaultValue: 0,
+          allowNull: true,
+        },
+        allowMoney: {
+          type: DataTypes.INTEGER(30),
+          defaultValue: 0,
+          allowNull: true,
+        },
+        allowJeonse: {
+          type: DataTypes.INTEGER(30),
+          defaultValue: 0,
+          allowNull: true,
+        },
+        allowLoan: {
+          type: DataTypes.INTEGER(30),
+          defaultValue: 0,
+          allowNull: true,
+        },
       },
       {
         modelName: 'Ability',

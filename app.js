@@ -5,6 +5,8 @@ const abilityRouter = require('./routes/ability');
 const userRouter = require('./routes/user');
 const authRouter = require('./routes/auth');
 const basicRouter = require('./routes/basic');
+const mapRouter = require('./routes/map');
+
 const db = require('./models');
 const dotenv = require('dotenv');
 const passport = require('passport');
@@ -18,11 +20,19 @@ passportConfig();
 /* 부동산 데이터 가져오기*/
 /* node-schedule 사용 필수(배포시)*/
 const dataAPI = require('./util/dataAPI');
-dataAPI.dataAPI();
+// dataAPI.dataAPI();
 
 // 법정동 코드저장
 const dongAPI = require('./util/dongAPI');
 // dongAPI.dongAPI();
+
+// test
+
+const testAPI = require('./util/testAPI');
+// testAPI.testAPI();
+// testAPI.test2API();
+// testAPI.test3API();
+// testAPI.test4API();
 
 app.use(
   cors({
@@ -55,12 +65,14 @@ app.get('/', (req, res) => {
 app.use(passport.initialize());
 app.use(passport.session());
 
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 app.use('/user', userRouter);
 app.use('/ability', abilityRouter);
 app.use('/auth', authRouter);
 app.use('/basic', basicRouter);
+app.use('/map', mapRouter);
 
 app.listen(port, () => {
   console.log('Node 서버 실행 중');
