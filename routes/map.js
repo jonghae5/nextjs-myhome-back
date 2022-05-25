@@ -14,11 +14,12 @@ router.post('/', isLoggedIn, async (req, res) => {
       const lowY = req.body.lowY;
       const highX = req.body.highX;
       const highY = req.body.highY;
-
+      const lowSquare = req.body.squareValue[0];
+      const highSquare = req.body.squareValue[1];
       const query = `SELECT A.id, A.거래금액, A.건축년도, CONCAT(A.년,A.월,A.일) 거래일자,CONCAT(A.법정동," ",A.지번) 주소, A.아파트, A.전용면적, A.층,A.x, A.y FROM apartment AS A 
         INNER JOIN(SELECT 아파트, MAX(CONCAT(년,월,일)) 거래일자, MAX(층) 층 FROM apartment GROUP BY 아파트) B
         ON CONCAT(A.년,A.월,A.일)= B.거래일자 AND A.아파트 = B.아파트 AND A.층 = B.층 
-        WHERE A.x >=${lowX} AND A.x<=${highX} AND A.y >=${lowY} AND A.y<=${highY} `;
+        WHERE A.x >=${lowX} AND A.x<=${highX} AND A.y >=${lowY} AND A.y<=${highY} AND A.전용면적 >=${lowSquare} AND A.전용면적<=${highSquare} `;
 
       const data = await sequelize.query(query, {
         type: Sequelize.QueryTypes.SELECT,
@@ -49,11 +50,14 @@ router.post('/ability/:id', isLoggedIn, async (req, res) => {
       const lowY = req.body.lowY;
       const highX = req.body.highX;
       const highY = req.body.highY;
+      const lowSquare = req.body.squareValue[0];
+      const highSquare = req.body.squareValue[1];
 
       const query = `SELECT A.id, A.거래금액, A.건축년도, CONCAT(A.년,A.월,A.일) 거래일자,CONCAT(A.법정동," ",A.지번) 주소, A.아파트, A.전용면적, A.층,A.x, A.y FROM apartment AS A 
       INNER JOIN(SELECT 아파트, MAX(CONCAT(년,월,일)) 거래일자, MAX(층) 층 FROM apartment GROUP BY 아파트) B
       ON CONCAT(A.년,A.월,A.일)= B.거래일자 AND A.아파트 = B.아파트 AND A.층 = B.층 
-      WHERE A.거래금액 >=${lowPrice} AND A.거래금액 <=${highPrice} AND A.x >=${lowX} AND A.x<=${highX} AND A.y >=${lowY} AND A.y<=${highY} `;
+      WHERE A.거래금액 >=${lowPrice} AND A.거래금액 <=${highPrice} AND A.x >=${lowX} AND A.x<=${highX}
+      AND A.y >=${lowY} AND A.y<=${highY} AND A.전용면적 >=${lowSquare} AND A.전용면적<=${highSquare} `;
 
       const data = await sequelize.query(query, {
         type: Sequelize.QueryTypes.SELECT,
