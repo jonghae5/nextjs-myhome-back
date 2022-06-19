@@ -9,6 +9,7 @@ exports.dataAPI = async () => {
   const request = require('request');
   const convert = require('xml-js');
   const Sequelize = require('sequelize');
+  const axios = require('axios');
   const Op = Sequelize.Op;
 
   //   const dongDataSeoul = await Dong.findAll({
@@ -51,106 +52,167 @@ exports.dataAPI = async () => {
 
   const dongData = [...dongDataSeoul, ...dongDataIC, ...dongDataGG];
 
-  console.log(dongData[0]);
+  console.log(dongData);
 
   //   const year = ['2020', '2021', '2022'];
-  const year = ['2022'];
+  const year = ['2021'];
   const dateList = [];
 
   //   ibks-platform.tistory.com/176 [남산 아래 개발자들]
 
-  //   for (var k = 0; k < dongData.length; k++) {
-  //     for (var i = 0; i < year.length; i++) {
-  //       for (var j = 1; j <= 12; j++) {
-  //         if (j < 10) {
-  //           j = '0' + j.toString();
-  //         }
-  //         dateList.push(year[i] + j.toString());
-  //       }
-  //     }
-  //     // dateList.length
-  //     for (var i = 0; i < dataList.length; i++) {
-  //       var url =
-  //         'http://openapi.molit.go.kr/OpenAPI_ToolInstallPackage/service/rest/RTMSOBJSvc/getRTMSDataSvcAptTradeDev';
-  //       var queryParams =
-  //         '?' +
-  //         encodeURIComponent('LAWD_CD') +
-  //         '=' +
-  //         dongData[k]['법정동코드5자리']; /* 동단위, 5자리*/
-  //       queryParams +=
-  //         '&' +
-  //         encodeURIComponent('DEAL_YMD') +
-  //         '=' +
-  //         dateList[i]; /* 거래년월 '202201'*/
-  //       queryParams +=
-  //         '&' + encodeURIComponent('pageNo') + '=' + '1'; /* 페이지번호*/
-  //       queryParams +=
-  //         '&' + encodeURIComponent('numOfRows') + '=' + '5000'; /* numOfRows*/
-  //       queryParams +=
-  //         '&' +
-  //         encodeURIComponent('serviceKey') +
-  //         '=' +
-  //         process.env.DATA_SECRET; /*Servicekey */
-  //       queryParams += '&' + encodeURIComponent('numOfRows') + '1000';
-  //       options = {
-  //         method: 'GET',
-  //         url: url + queryParams,
-  //       };
+  for (let i = 0; i < year.length; i++) {
+    for (let j = 1; j <= 3; j++) {
+      if (j < 10) {
+        j = '0' + j.toString();
+      }
+      dateList.push(year[i] + j.toString());
+    }
+  }
+  console.log(dateList);
 
-  //       await request(options, function (error, res, body) {
-  //         if (error) {
-  //           throw new Error(error);
-  //         } else {
-  //           if (res.statusCode == 200) {
-  //             const xmlToJson = convert.xml2json(body, {
-  //               compact: true,
-  //               spaces: 2,
-  //             });
+  for (let k = 0; k < dongData.length; k++) {
+    // dateList.length
+    for (let i = 0; i < dateList.length; i++) {
+      var url =
+        'http://openapi.molit.go.kr/OpenAPI_ToolInstallPackage/service/rest/RTMSOBJSvc/getRTMSDataSvcAptTradeDev';
+      var queryParams =
+        '?' +
+        encodeURIComponent('LAWD_CD') +
+        '=' +
+        dongData[k]['법정동코드5자리']; /* 동단위, 5자리*/
+      queryParams +=
+        '&' +
+        encodeURIComponent('DEAL_YMD') +
+        '=' +
+        dateList[i]; /* 거래년월 '202201'*/
+      queryParams +=
+        '&' + encodeURIComponent('pageNo') + '=' + '1'; /* 페이지번호*/
+      queryParams +=
+        '&' + encodeURIComponent('numOfRows') + '=' + '5000'; /* numOfRows*/
+      queryParams +=
+        '&' +
+        encodeURIComponent('serviceKey') +
+        '=' +
+        process.env.DATA_SECRET; /*Servicekey */
+      queryParams += '&' + encodeURIComponent('numOfRows') + '1000';
 
-  //             var data = JSON.parse(xmlToJson).response.body?.items.item;
-  //             // console.log(data.length);
-  //             arr = [];
-  //             if (data) {
-  //               for (var i = 0; i < data.length; i++) {
-  //                 //   console.log(data[i]);
-  //                 // bulk Create 이용
+      //   options = {
+      //     method: 'GET',
+      //     url: url + queryParams,
+      //   };
 
-  //                 var info = {
-  //                   거래금액: data[i].거래금액?._text || null,
-  //                   건축년도: data[i].건축년도?._text || null,
-  //                   도로명: data[i].도로명?._text || '',
-  //                   도로명건물본번호코드:
-  //                     data[i].도로명건물본번호코드?._text || null,
-  //                   도로명건물부번호코드:
-  //                     data[i].도로명건물부번호코드?._text || null,
-  //                   도로명시군구코드: data[i].도로명시군구코드?._text || null,
-  //                   도로명일련번호번호코드:
-  //                     data[i].도로명일련번호코드?._text || null,
-  //                   도로명지상지하코드: data[i].도로명지상지하코드?._text || null,
-  //                   도로명코드: data[i].도로명코드?._text || null,
-  //                   법정동: data[i].법정동?._text || '',
-  //                   법정동본번코드: data[i].법정동본번코드?._text || null,
-  //                   법정동부번코드: data[i].법정동부번코드?._text || null,
-  //                   법정동시군구코드: data[i].법정동시군구코드?._text || null,
-  //                   법정동읍면동코드: data[i].법정동읍면동코드?._text || null,
-  //                   법정동지번코드: data[i].법정동지번코드?._text || null,
-  //                   아파트: data[i].아파트?._text || '',
-  //                   년: data[i].년?._text || null,
-  //                   월: data[i].월?._text || null,
-  //                   일: data[i].일?._text || null,
-  //                   일련번호: data[i].일련번호?._text || null,
-  //                   전용면적: data[i].전용면적?._text || null,
-  //                   지번: data[i].지번?._text || null,
-  //                   지역코드: data[i].지역코드?._text || null,
-  //                   층: data[i].층?._text || null,
-  //                 };
-  //                 arr.push(info);
-  //               }
-  //             }
-  //           }
-  //           Apartment.bulkCreate(arr);
-  //         }
-  //       });
-  //     }
-  //   }
+      axios.get(url + queryParams).then(res => {
+        const xmlToJson = convert.xml2json(body, {
+          compact: true,
+          spaces: 2,
+        });
+
+        var data = JSON.parse(xmlToJson).response.body?.items.item;
+        // console.log(data.length);
+        arr = [];
+        if (data) {
+          for (var i = 0; i < data.length; i++) {
+            const regex = /[^0-9]/g;
+            const price = data[i].거래금액?._text
+              ? parseInt(data[i].거래금액._text.replace(regex, ''), 10)
+              : null;
+            var info = {
+              거래금액: price,
+              건축년도: data[i].건축년도?._text || null,
+              도로명: data[i].도로명?._text || null,
+              도로명건물본번호코드: data[i].도로명건물본번호코드?._text || null,
+              도로명건물부번호코드: data[i].도로명건물부번호코드?._text || null,
+              도로명시군구코드: data[i].도로명시군구코드?._text || null,
+              도로명일련번호번호코드: data[i].도로명일련번호코드?._text || null,
+              도로명지상지하코드: data[i].도로명지상지하코드?._text || null,
+              도로명코드: data[i].도로명코드?._text || null,
+              법정동: data[i].법정동?._text || null,
+              법정동본번코드: data[i].법정동본번코드?._text || null,
+              법정동부번코드: data[i].법정동부번코드?._text || null,
+              법정동시군구코드: data[i].법정동시군구코드?._text || null,
+              법정동읍면동코드: data[i].법정동읍면동코드?._text || null,
+              법정동지번코드: data[i].법정동지번코드?._text || null,
+              아파트: data[i].아파트?._text || '',
+              년: data[i].년?._text || null,
+              월: data[i].월?._text || null,
+              일: data[i].일?._text || null,
+              일련번호: data[i].일련번호?._text || null,
+              전용면적: data[i].전용면적?._text || null,
+              지번: data[i].지번?._text || null,
+              지역코드: data[i].지역코드?._text || null,
+              층: data[i].층?._text || null,
+              x: null,
+              y: null,
+            };
+            arr.push(info);
+          }
+          // await Apartment.bulkCreate(arr);
+          Apartment.bulkCreate(arr);
+        }
+      });
+      //   request(options, async function (error, res, body) {
+      //     if (error) {
+      //       throw new Error(error);
+      //     } else {
+      //       if (res.statusCode == 200) {
+      //         const xmlToJson = convert.xml2json(body, {
+      //           compact: true,
+      //           spaces: 2,
+      //         });
+
+      //         var data = JSON.parse(xmlToJson).response.body?.items.item;
+      //         // console.log(data.length);
+      //         arr = [];
+      //         if (data) {
+      //           for (var i = 0; i < data.length; i++) {
+      //             //   console.log(data[i]);
+      //             // bulk Create 이용
+      //             // setTimeout(console.log('종료'), 1000);
+      //             // console.log('종료');
+      //             const regex = /[^0-9]/g;
+
+      //             const price = data[i].거래금액?._text
+      //               ? parseInt(data[i].거래금액._text.replace(regex, ''), 10)
+      //               : null;
+      //             var info = {
+      //               거래금액: price,
+      //               건축년도: data[i].건축년도?._text || null,
+      //               도로명: data[i].도로명?._text || null,
+      //               도로명건물본번호코드:
+      //                 data[i].도로명건물본번호코드?._text || null,
+      //               도로명건물부번호코드:
+      //                 data[i].도로명건물부번호코드?._text || null,
+      //               도로명시군구코드: data[i].도로명시군구코드?._text || null,
+      //               도로명일련번호번호코드:
+      //                 data[i].도로명일련번호코드?._text || null,
+      //               도로명지상지하코드: data[i].도로명지상지하코드?._text || null,
+      //               도로명코드: data[i].도로명코드?._text || null,
+      //               법정동: data[i].법정동?._text || null,
+      //               법정동본번코드: data[i].법정동본번코드?._text || null,
+      //               법정동부번코드: data[i].법정동부번코드?._text || null,
+      //               법정동시군구코드: data[i].법정동시군구코드?._text || null,
+      //               법정동읍면동코드: data[i].법정동읍면동코드?._text || null,
+      //               법정동지번코드: data[i].법정동지번코드?._text || null,
+      //               아파트: data[i].아파트?._text || '',
+      //               년: data[i].년?._text || null,
+      //               월: data[i].월?._text || null,
+      //               일: data[i].일?._text || null,
+      //               일련번호: data[i].일련번호?._text || null,
+      //               전용면적: data[i].전용면적?._text || null,
+      //               지번: data[i].지번?._text || null,
+      //               지역코드: data[i].지역코드?._text || null,
+      //               층: data[i].층?._text || null,
+      //               x: null,
+      //               y: null,
+      //             };
+      //             arr.push(info);
+      //           }
+      //         }
+      //       }
+      //       await Apartment.bulkCreate(arr);
+      //       console.log('넣었어요.');
+      //     }
+      //   });
+    }
+  }
 };

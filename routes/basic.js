@@ -8,7 +8,7 @@ router.post('/ability', isLoggedIn, async (req, res) => {
   try {
     if (req.user.data.id === req.body.id) {
       const basicAbility = await Basic.findOne({
-        where: { UserId: req.body.id },
+        where: { UserId: req.user.data.id },
       });
 
       if (basicAbility) {
