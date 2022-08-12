@@ -29,7 +29,7 @@ const dongAPI = require('./util/dongAPI');
 // test
 
 const testAPI = require('./util/testAPI');
-// testAPI.testAPI();
+// setInterval(testAPI.testAPI, 5000);
 
 // testAPI.test2API();
 // testAPI.test3API();
